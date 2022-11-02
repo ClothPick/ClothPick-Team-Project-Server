@@ -8,11 +8,6 @@ public class ClosetImgInfoVo {
 	private String clothImgFolder;
 	private String clothImgTime;
 	
-	// foreign key
-	private String username;
-	private String userNickname;
-	private int userId;
-	
 	// getter and setter
 	public String getClothImgName() {
 		return clothImgName;
@@ -50,25 +45,4 @@ public class ClosetImgInfoVo {
 	public void setClothImgTime(String clothImgTime) {
 		this.clothImgTime = clothImgTime;
 	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getUserNickname() {
-		return userNickname;
-	}
-	public void setUserNickname(String userNickname) {
-		this.userNickname = userNickname;
-	}
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-	
-	
-	
 }

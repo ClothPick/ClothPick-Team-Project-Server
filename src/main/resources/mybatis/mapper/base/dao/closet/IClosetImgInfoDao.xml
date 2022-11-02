@@ -6,8 +6,8 @@
 <mapper namespace="com.example.demo.closet.dao.IClosetImgInfoDao">
 	<!-- 이미지 업로드 -->
 	<insert id="ClosetImgInfoUploadDao" parameterType="java.util.HashMap">
-		insert into closetimginfo (cloth_img_name, cloth_img_real_name, cloth_img_file_size, cloth_img_extension, cloth_img_folder, cloth_img_time, username, user_nickname, user_id)
-		values (#{clothImgName}, #{clothImgRealName}, #{clothImgFileSize}, #{clothImgExtension}, #{clothImgFolder}, #{clothImgTime}, #{username}, #{userNickname}, #{userId})
+		insert into closetimginfo (cloth_img_name, cloth_img_real_name, cloth_img_file_size, cloth_img_extension, cloth_img_folder, cloth_img_time)
+		values (#{clothImgName}, #{clothImgRealName}, #{clothImgFileSize}, #{clothImgExtension}, #{clothImgFolder}, #{clothImgTime})
 	</insert>
 	
 </mapper>
