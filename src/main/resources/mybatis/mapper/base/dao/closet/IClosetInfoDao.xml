@@ -5,7 +5,7 @@
 	
 <mapper namespace="com.example.demo.closet.dao.IClosetInfoDao">
 	<!-- 조회 -->
-	<select id="ClosetInfoAllListDao" resultType="com.example.demo.closet.vo.ClosetInfoVo">
+	<select id="ClosetInfoAllListDao" resultType="com.example.demo.closet.vo.ClosetGetInfoVo">
 		select * from closetinfo;
 	</select>
 	

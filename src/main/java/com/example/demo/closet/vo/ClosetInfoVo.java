@@ -13,13 +13,13 @@ public class ClosetInfoVo {
 		
 		// foreign key
 		private String username;
-		private String userNickname;
+		private String userNickName;
 		private String userId;
-		
-		// getter and setter
 		public String getClothId() {
 			return clothId;
 		}
+		
+		// getter and setter
 		public void setClothId(String clothId) {
 			this.clothId = clothId;
 		}
@@ -77,11 +77,11 @@ public class ClosetInfoVo {
 		public void setUsername(String username) {
 			this.username = username;
 		}
-		public String getUserNickname() {
-			return userNickname;
+		public String getUserNickName() {
+			return userNickName;
 		}
-		public void setUserNickname(String userNickname) {
-			this.userNickname = userNickname;
+		public void setUserNickName(String userNickName) {
+			this.userNickName = userNickName;
 		}
 		public String getUserId() {
 			return userId;
@@ -89,7 +89,4 @@ public class ClosetInfoVo {
 		public void setUserId(String userId) {
 			this.userId = userId;
 		}
-		
-		
-		
 }

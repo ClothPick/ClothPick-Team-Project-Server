@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.closet.service.IClosetService;
+import com.example.demo.closet.vo.ClosetGetInfoVo;
 import com.example.demo.closet.vo.ClosetInfoVo;
 import com.example.demo.closet.vo.ConnectClosetImgVo;
 
@@ -39,13 +40,6 @@ public class ClosetController {
 	}
 	
 	//----------------------------------------------------------
-	// 옷 이미지 조회 - 옷 정보 수정에서 사용
-//	@GetMapping("/api/v1/closetimg/{img}")
-//	public String clothImgDetail(@PathVariable("img") String clothImgName, Model model) {
-//		String img = IClosetService.ClosetImgInfoGetDao();
-//		return img;
-//	}
-	
 	// 옷 이미지 정보 업로드(추가)
 	@PostMapping("/api/v1/closetimgupload")
 	public String clothimgupload(HttpServletRequest httpServletRequest, @RequestParam("file") MultipartFile file) {
@@ -76,15 +70,17 @@ public class ClosetController {
 	//----------------------------------------------------------
 	// 옷 정보 조회
 	@GetMapping("/api/v1/closetlist")
-	public List<ClosetInfoVo> closetlist(HttpServletRequest httpServletRequest) {
-		List<ClosetInfoVo> list = IClosetService.ClosetInfoAllListDao();
+	public List<ClosetGetInfoVo> closetlist(HttpServletRequest httpServletRequest) {
+		List<ClosetGetInfoVo> list = IClosetService.ClosetInfoAllListDao();
 		return list;
 	}
 	
 	// 옷 정보 작성(추가)
 	@PostMapping("/api/v1/closet")
 	public String closetupload(HttpServletRequest httpServletRequest, @RequestBody ClosetInfoVo ClosetInfoVo, Model model) {
-		String resultClosetId = IClosetService.ClosetInfoWrite(ClosetInfoVo);
+		String authorizationHeader = httpServletRequest.getHeader("Authorization");
+		String token = authorizationHeader.substring(7);
+		String resultClosetId = IClosetService.ClosetInfoWrite(token, ClosetInfoVo);
 		return resultClosetId;
 	}
 	
@@ -92,10 +88,10 @@ public class ClosetController {
 	@DeleteMapping("/api/v1/clothDelete/{clothId}")
 	   public String closetdelete(@PathVariable("clothId") String clothId) {
 	      int result=IClosetService.ClosetInfoDeleteDao(clothId);
-	      if(result ==1) {
-	         return "ok";
-	      }else {
+	      if(result == 1) {
 	         return "fail";
+	      }else {
+	         return "ok";
 	      }
 	   }
 	
@@ -103,7 +99,9 @@ public class ClosetController {
 	// 옷-이미지 정보 조회(get)
 	@GetMapping("/api/v1/clothimglist")
 	public List<ConnectClosetImgVo> closetimglist(HttpServletRequest httpServletRequest) {
-		List<ConnectClosetImgVo> list = IClosetService.ConnectClosetImgGetDao();
+//		String authorizationHeader = httpServletRequest.getHeader("Authorization");
+//		String token = authorizationHeader.substring(7);
+		List<ConnectClosetImgVo> list = IClosetService.ConnectClosetImgGetDao(); // token
 		return list;
 	}
 	
@@ -124,8 +122,5 @@ public class ClosetController {
 	public String detail(@PathVariable("img") String clothimginfo, Model model) {
 		return clothimginfo;
 	}
-	
-	// 옷-이미지 정보 삭제
-	
 
 }
