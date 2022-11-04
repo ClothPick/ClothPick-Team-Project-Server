@@ -249,7 +249,7 @@ public class UserService implements UserDetailsService {
 			
 	    	Map<String, String> userMap = new HashMap<String,String>();
 	    	userMap.put("username", request.getUsername());
-	    	//패스워드 암화화 
+	    	//패스워드 암호화 
 	    	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	    	String resultpassword = encoder.encode(request.getPassword());
 	    	userMap.put("password", resultpassword);

@@ -21,6 +21,9 @@ public interface BoardCommentDao {
 	// 댓글, 대댓글 모두 삭제
 	public int BoardCommentDeletelayer2Dao(Map<String, String> map);
 	
+	// 댓글 ID 검색
+	public BoardCommentVo BoardCommentIdSearchDao(Map<String, String> map);
+	
 	//boardid 마다 댓글 갯수
 	//public int BoardCommentCountDao(Map<String, String> map);
 	

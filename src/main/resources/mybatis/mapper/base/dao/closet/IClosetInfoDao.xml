@@ -17,7 +17,7 @@
 	
 	<update id="ClosetInfoEditDao" parameterType="java.util.HashMap">
 		update closetinfo
-		set cloth_type=#{clothType}, cloth_detail=#{clothDetail}, cloth_color=#{clothColor}, cloth_pattern=#{clothPattern}, cloth_texture=#{clothTexture}, cloth_style=#{clothStyle}, cloth_keyword=#{clothKeyword}, cloth_pref=#{clothPref})
+		set cloth_keyword = #{clothKeyword}
 		where cloth_id = #{clothId};
 	</update>
 	

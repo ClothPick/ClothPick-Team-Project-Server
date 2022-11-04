@@ -20,6 +20,6 @@ public interface IClosetService {
 	
 	// IConnectClosetImgDao - 옷,이미지 연결 테이블
 	public List<ConnectClosetImgVo> ConnectClosetImgGetDao(); // 조회 String token
-	public int ConnectClosetImgPostDao(ConnectClosetImgVo ConnectClosetImgVo); // 작성
+	public int ConnectClosetImgPostDao(String token, ConnectClosetImgVo ConnectClosetImgVo); // 작성
 	public int ConnectClosetImgDeleteDao(String clothId); // 삭제
 }

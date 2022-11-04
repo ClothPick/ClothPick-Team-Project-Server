@@ -1,4 +1,4 @@
-package com.example.demo.board.vo;
+ package com.example.demo.board.vo;
 
 public class BoardCommentLayer1InfoVo {
 	private String boardId    ;

@@ -14,7 +14,7 @@
 
 <delete id="BoardScrapDeleteDao" parameterType="java.util.HashMap">
         delete from boardscrap    
-        where user_id = #{userId} and board_id = #{boardId} and board_type = #{boardType};
+        where user_id = #{userId} and board_id = #{boardId};
 </delete>
     	
 <select id="BoardScrapUserIdListDao" resultType="com.example.demo.board.vo.BoardScrapVo" parameterType="java.util.HashMap">
