@@ -266,6 +266,17 @@ public class BoardServiceimpl implements BoardService{
 		return filenamelist;
 	}
 	
+	// 댓글 ID 검색
+	@Override
+	public BoardCommentVo BoardCommentIdSearch(String commentId) {
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("commentId", commentId);
+		
+		BoardCommentVo comment = BoardCommentDao.BoardCommentIdSearchDao(paramMap);
+		
+		return comment;
+	}
+	
 	// 댓글 작성
 	@Override
 	public int BoardCommentPost(String token, BoardCommentVo BoardCommentVo) {
@@ -289,8 +300,13 @@ public class BoardServiceimpl implements BoardService{
 		paramMap.put("commentId", commentId);
 		
 		if(BoardCommentVo.getCommentParentsId() != null) {
-			paramMap.put("commentParentsId", BoardCommentVo.getCommentParentsId());
-			paramMap.put("commentLayer", "2");
+			if(BoardCommentVo.getCommentParentsId().equals("0")) {
+				paramMap.put("commentLayer", "1");
+			} else {
+				paramMap.put("commentParentsId", BoardCommentVo.getCommentParentsId());
+				paramMap.put("commentLayer", "2");
+				
+			}
 		}else {
 			paramMap.put("commentLayer", "1");
 		}
@@ -305,13 +321,21 @@ public class BoardServiceimpl implements BoardService{
 	
 	// 댓글 수정
 	@Override
-	public int BoardCommentPut(BoardCommentVo BoardCommentVo, String commentId) {
+	public int BoardCommentPut(String token, BoardCommentVo BoardCommentVo, String commentId) {
+		ZoneOffset seoulZoneOffset = ZoneOffset.of("+09:00");
+		String currentout = ZonedDateTime.now(seoulZoneOffset).toString();
+		System.out.println("---- currentout : " + currentout);
+		System.out.println("---- commentId : " + commentId);
+		System.out.println("---- commentContent : " + BoardCommentVo.getCommentContent());
+		
 		Map<String, String> paramMap = new HashMap<String,String>();
 		paramMap.put("commentId", commentId);
 		paramMap.put("commentContent", BoardCommentVo.getCommentContent());
+		paramMap.put("commentUpdateAt", currentout.substring(0, 19));
 		
 		int result = BoardCommentDao.BoardCommentPutDao(paramMap);
-		return 0;
+		
+		return result;
 	}
 	
 	//댓글 삭제 => 2가지 동작
@@ -319,55 +343,77 @@ public class BoardServiceimpl implements BoardService{
 	// 1 : 하위 레이어 삭제 => 그 대댓글만 삭제
 	// 2 : 상위 레이어 삭제 => 연결된 모든 하위 레이어(대댓글) 전부 삭제
 	@Override
-	public int BoardCommentDelete(String commentId , String commentLayer, String token) {
+	public int BoardCommentDelete(String commentId , String token) {
 		
 		int result = 0;
-//		paramMap.put("commentLayer", "1");
-		System.out.println("commentLayer :" + commentLayer.getClass());
-		System.out.println("commentLayer :" + commentLayer);
 		
-		String userid = JwtUtil.getUserIdFromToken(token);
+		System.out.println("서비스 동작중");
 		
+		Map<String, String> paramMap3 = new HashMap<String, String>();
+		paramMap3.put("commentId", commentId);
+		BoardCommentVo comment = BoardCommentDao.BoardCommentIdSearchDao(paramMap3);
+		
+		String commentLayer = String.valueOf(comment.getCommentLayer());
+		System.out.println("------- commentLayer :" + commentLayer);
 
+		// 상위 댓글 삭제 경우 (하위 댓글 포함 삭제)
 		if(commentLayer.equals("1")) {
-			System.out.println("~~~~~ 1번 실행");
+			System.out.println("#### 1번 실행");
 			Map<String, String> paramMap = new HashMap<String,String>();
 			paramMap.put("commentId", commentId);
-			paramMap.put("userId", userid);
+			paramMap.put("commentLayer", "1");
 			
-			result = BoardCommentDao.BoardCommentDeleteDao(paramMap);
-		}
-		else if(commentLayer.equals("2")) {
-			System.out.println("~~~~~ 2번 실행");
-			Map<String, String> paramMap = new HashMap<String,String>();
-			paramMap.put("commentId", commentId);
-			paramMap.put("userId", userid);
+			Map<String, String> paramMap2 = new HashMap<String,String>();
+			paramMap2.put("commentId", commentId);
+			paramMap2.put("commentLayer", "2");
 			
-			// 둘다 성공할 경우만 result 값을 바꾼다.
+			
 			int result1 = BoardCommentDao.BoardCommentDeleteDao(paramMap);
-			int result2 = BoardCommentDao.BoardCommentDeletelayer2Dao(paramMap);
+			int result2 = BoardCommentDao.BoardCommentDeletelayer2Dao(paramMap2);
 			
-			if(result1 == 1 && result2 == 1) {
-				System.out.println("~~~~~ 2번 실행, 삭제되었습니다.");
-				result = 1; 
+			if(result1 != 0 && result2 != 0) {
+				result = 1;
 			}
 			else {
-				System.out.println("~~~~~ 2번 실행, 삭제되지 않았습니다.");
+				result = 0;
 			}
+			
+			System.out.println("#### result : " + result);
+		}
+		
+		// 하위 댓글 삭제 경우
+		else if(commentLayer.equals("2")) {
+			System.out.println("#### 2번 실행");
+			
+			Map<String, String> paramMap2 = new HashMap<String,String>();
+			paramMap2.put("commentId", commentId);
+			paramMap2.put("commentLayer", "2");
+			
+			result = BoardCommentDao.BoardCommentDeleteDao(paramMap2);
 		}
 		
 		System.out.println("result : " + result);
 		return result;
 	}
 	
-	// 상위 레이어 삭제 => 연결된 모든 하위 레이어(대댓글) 전부 삭제
+	// 하위 레이어 삭제
 	@Override
-	public int BoardCommentDeletelayer2(String commentId) {
+	public int BoardCommentDeletelayer2(String commentId, String token) {
 		Map<String, String> paramMap = new HashMap<String,String>();
+		String userid = JwtUtil.getUserIdFromToken(token);
+		
+		Map<String, String> paramMap3 = new HashMap<String, String>();
+		paramMap3.put("commentId", commentId);
+		BoardCommentVo comment = BoardCommentDao.BoardCommentIdSearchDao(paramMap3);
+		String commentLayer = String.valueOf(comment.getCommentLayer());
+		
 		paramMap.put("commentId", commentId);
+		paramMap.put("commentLayer", commentLayer);
+		paramMap.put("userId", userid);
 		
 		int result = BoardCommentDao.BoardCommentDeletelayer2Dao(paramMap);
 		
+		System.out.println("##### result : " + result);
 		return result;
 	}
 	
@@ -481,13 +527,13 @@ public class BoardServiceimpl implements BoardService{
 	}
 	// 스크랩 삭제
 	@Override
-	public int BoardScrapDelete(String token, BoardScrapVo BoardScrapVo) {
+	public int BoardScrapDelete(String token, String boardId) {
 		String userid = JwtUtil.getUserIdFromToken(token);
 
 		Map<String, String> paramMap = new HashMap<String,String>();
 		paramMap.put("userId", userid);
-		paramMap.put("boardId", BoardScrapVo.getBoardId());
-		paramMap.put("boardType", BoardScrapVo.getBoardType());
+		paramMap.put("boardId", boardId);
+//		paramMap.put("boardType", BoardScrapVo.getBoardType());
 		
 		int result = BoardScrapDao.BoardScrapDeleteDao(paramMap);
 		return result;
@@ -527,4 +573,5 @@ public class BoardServiceimpl implements BoardService{
 			
 			return result;
 		}
+
 }

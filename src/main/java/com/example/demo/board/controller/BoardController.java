@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -181,19 +182,33 @@ public class BoardController {
 		return list1;
 	}
 	
+	// 댓글 수정
+	@PutMapping("/api/v1/comment/{commentId}")
+	public String commentUpdate(@PathVariable(name = "commentId") String commentId, @RequestBody BoardCommentVo request, HttpServletRequest httpServletRequest) {
+		String authorizationHeader = httpServletRequest.getHeader("Authorization");
+		String token = authorizationHeader.substring(7);
+		
+		int result = BoardService.BoardCommentPut(token, request, commentId);
+		if (result == 1) {
+			return "ok";
+		} else {
+			return "fail";
+		}
+	}
+	
+	
 	// 상위 댓글 | 하위 댓글 삭제
-	@DeleteMapping("/api/v1/commentlist/delete/{commentId}")
-	public String commentDeleteAll(@PathVariable(name = "commentId") String commentId, @RequestBody BoardCommentVo request, HttpServletRequest httpServletRequest) {
+	@DeleteMapping("/api/v1/comment/{commentId}")
+	public String commentDeleteAll(@PathVariable(name = "commentId") String commentId, HttpServletRequest httpServletRequest) {
 		
 		String authorizationHeader = httpServletRequest.getHeader("Authorization");
 		String token = authorizationHeader.substring(7);
-
-	
-		String commentLayer = String.valueOf(request.getCommentLayer());
-		System.out.println("++++++ commentId : "+ commentId);
-		System.out.println("###### commentLayer : " + commentLayer);
-		int result = BoardService.BoardCommentDelete(commentId, commentLayer, token);
-		if (result == 1) {
+		
+		System.out.println("#### --- commentId : " + commentId);
+		
+		
+		int result = BoardService.BoardCommentDelete(commentId, token);
+		if (result != 0) {
 			return "ok";
 		}
 		else {
@@ -326,11 +341,11 @@ public class BoardController {
 	}
 
 	// 스크랩 정보 삭제 요청
-	@DeleteMapping("/api/v1/scrap")
-	public String BoardScrapDelete(HttpServletRequest httpServletRequest, @RequestBody BoardScrapVo request) {
+	@DeleteMapping("/api/v1/scrapdel/{boardId}")
+	public String BoardScrapDelete(@PathVariable(name = "boardId") String boardId, HttpServletRequest httpServletRequest) {
 		String authorizationHeader = httpServletRequest.getHeader("Authorization");
 		String token = authorizationHeader.substring(7);
-		int result = BoardService.BoardScrapDelete(token, request);
+		int result = BoardService.BoardScrapDelete(token, boardId);
 		if (result == 1) {
 			return "ok";
 		} else {

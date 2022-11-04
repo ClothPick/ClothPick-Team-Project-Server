@@ -140,8 +140,15 @@ public class ClosetServiceImpl implements IClosetService {
 	// 옷 정보 수정
 	@Override
 	public int ClosetInfoEditDao(ClosetInfoVo ClosetInfoVo, String clothId) {
-		// TODO Auto-generated method stub
-		return 0;
+		Map<String, String> paramMap = new HashMap<String, String>();
+//		String userid = JwtUtil.getUserIdFromToken(token);
+//		paramMap.put("userId", userid);
+		paramMap.put("clothId", clothId);
+		paramMap.put("clothKeyword", ClosetInfoVo.getClothKeyword());
+		
+		int result = IClosetInfoDao.ClosetInfoEditDao(paramMap);
+		
+		return result;
 	}
 
 	// 옷 정보 삭제
@@ -170,9 +177,10 @@ public class ClosetServiceImpl implements IClosetService {
 
 	// 옷-이미지 연결 post
 	@Override
-	public int ConnectClosetImgPostDao(ConnectClosetImgVo ConnectClosetImgVo) {
+	public int ConnectClosetImgPostDao(String token, ConnectClosetImgVo ConnectClosetImgVo) {
 		ZoneOffset seoulZoneOffset = ZoneOffset.of("+09:00");
 		String currentout = ZonedDateTime.now(seoulZoneOffset).toString();
+		String userid = JwtUtil.getUserIdFromToken(token);
 
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("clothImgName", ConnectClosetImgVo.getClothImgName());
@@ -180,6 +188,7 @@ public class ClosetServiceImpl implements IClosetService {
 
 		paramMap.put("createAt", currentout.substring(0, 19));
 		paramMap.put("updateAt", currentout.substring(0, 19));
+		paramMap.put("userId", userid);
 
 		int result = IConnectClosetImgDao.ConnectClosetImgPostDao(paramMap);
 		if (result == 1) {

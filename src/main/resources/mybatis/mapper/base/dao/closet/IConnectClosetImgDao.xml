@@ -11,8 +11,8 @@
 	
 	<!-- 작성 -->
 	<insert id="ConnectClosetImgPostDao" parameterType="java.util.HashMap">
-		insert into connectclosetimg(cloth_img_name, cloth_id, create_at, update_at)
-		values (#{clothImgName}, #{clothId}, #{createAt}, #{updateAt})
+		insert into connectclosetimg(cloth_img_name, cloth_id, create_at, update_at, user_id)
+		values (#{clothImgName}, #{clothId}, #{createAt}, #{updateAt}, #{userId})
 	</insert>
 	
 	<!-- 삭제 -->

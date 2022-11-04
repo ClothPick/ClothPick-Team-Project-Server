@@ -54,12 +54,15 @@ public interface BoardService {
 	// 댓글 관련
 	// 댓글 작성, 수정, 삭제 
 	public int BoardCommentPost(String token, BoardCommentVo BoardCommentVo);
-	public int BoardCommentPut(BoardCommentVo BoardCommentVo, String commentId);
+	public int BoardCommentPut(String token, BoardCommentVo BoardCommentVo, String commentId);
 	
 	// 댓글 삭제 - 댓글, 대댓글 모두 삭제 | 대댓글만 삭제
-	public int BoardCommentDelete(String commentId, String commentLayer, String token);
+	public int BoardCommentDelete(String commentId, String token);
 	// 댓글 삭제 - 대댓글만 삭제
-	public int BoardCommentDeletelayer2(String commentId);
+	public int BoardCommentDeletelayer2(String commentId, String token);
+	
+	// 댓글 Id 조회
+	public BoardCommentVo BoardCommentIdSearch(String commentId);
 	
 	//boardid 마다 댓글 갯수
 	// all조회로 어느정도 가능한 동작일지도?
@@ -96,7 +99,7 @@ public interface BoardService {
 	// 스크랩 관련
 	// 작성 삭제
 	public int BoardScrapPost(String token, BoardScrapVo BoardScrapVo);
-	public int BoardScrapDelete(String token, BoardScrapVo BoardScrapVo);
+	public int BoardScrapDelete(String token, String boardId);
 	
 	
 	// 유저 아이디로 글 아이디 가져옴
